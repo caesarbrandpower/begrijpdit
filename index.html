@@ -788,8 +788,12 @@ EXTRA REGELS:
     messages: messages
   })
 });
-      if (!response.ok) throw new Error(response.status);
-      const text = data.content?.find(b => b.type === 'text')?.text || data.error?.message || 'Geen antwoord ontvangen';
+ if (!response.ok) {
+  const err = await response.json();
+  alert(JSON.stringify(err).substring(0, 500));
+  throw new Error(response.status);
+}
+const text = data.content?.find(b => b.type === 'text')?.text || data.error?.message || 'Geen antwoord ontvangen';
 alert(text.substring(0, 500));
 renderOutput(text);
       
