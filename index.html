@@ -777,16 +777,17 @@ EXTRA REGELS:
 
     try {
       const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          system: systemPrompt,
-          messages: messages
-        })
-      });
-
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 1000,
+    system: systemPrompt,
+    messages: messages
+  })
+});
       if (!response.ok) throw new Error(response.status);
       const data = await response.json();
       renderOutput(data.content[0].text);
