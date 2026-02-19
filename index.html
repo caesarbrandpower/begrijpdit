@@ -803,13 +803,13 @@ renderOutput(text);
   }
 
   function renderOutput(text) {
-    const sections = [
-      { key: 'WAT STAAT ER?', label: 'Wat staat er?', isAction: false },
-      { key: 'WAT MOET JE DOEN?', label: 'Jouw actiepunten', isAction: true },
-      { key: 'WAT KAN WACHTEN?', label: 'Wat kan wachten?', isAction: false },
-      { key: 'WAT ALS JE NIETS DOET?', label: 'Wat als je niets doet?', isAction: false },
-    ];
-
+const sections = [
+  { key: 'WAT STAAT ER?', label: 'Wat staat er?', isAction: false },
+  { key: 'WAT MOET JE DOEN?', label: 'Jouw actiepunten', isAction: true },
+  { key: 'WAT KAN WACHTEN?', label: 'Wat kan wachten?', isAction: false },
+  { key: 'WAT ALS JE NIETS DOET?', label: 'Wat als je niets doet?', isAction: false },
+];
+text = text.replace(/\*\*/g, '').replace(/##/g, '').trim();
     let html = '';
     let firstBlock = true;
 
