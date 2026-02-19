@@ -790,8 +790,9 @@ EXTRA REGELS:
 });
       if (!response.ok) throw new Error(response.status);
       const data = await response.json();
-      renderOutput(data.content[0].text);
-
+const text = data.content?.find(b => b.type === 'text')?.text || data.error?.message || 'Geen antwoord ontvangen';
+renderOutput(text);
+      
     } catch (err) {
       showError('Er ging iets mis. Controleer je verbinding en probeer het opnieuw.');
       console.error(err);
