@@ -788,9 +788,9 @@ EXTRA REGELS:
     messages: messages
   })
 });
- if (!response.ok) {
-  const err = await response.json();
-  alert(JSON.stringify(err).substring(0, 500));
+const data = await response.json();
+if (!response.ok) {
+  alert(JSON.stringify(data).substring(0, 500));
   throw new Error(response.status);
 }
 const text = data.content?.find(b => b.type === 'text')?.text || data.error?.message || 'Geen antwoord ontvangen';
