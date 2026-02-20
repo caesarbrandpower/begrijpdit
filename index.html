@@ -572,6 +572,33 @@
       .output-footer { flex-direction: column; align-items: flex-start; }
     }
 
+
+    /* Suggesties */
+    .suggesties {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .suggestie-btn {
+      background: var(--accent-light);
+      border: 1.5px solid var(--action-border);
+      color: var(--accent-dark);
+      padding: 0.5rem 0.9rem;
+      border-radius: 100px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .suggestie-btn:hover, .suggestie-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
     /* SchrijfDit trigger */
     .schrijfdit-trigger {
       margin-top: 1rem;
@@ -735,10 +762,10 @@
     </div>
     <div class="tab-panel" id="tab-photo">
       <label class="upload-zone" for="photoInput">
-        <input type="file" id="photoInput" accept="image/*" capture="environment" onchange="handlePhotoUpload(this)">
+        <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp,image/gif" capture="environment" onchange="handlePhotoUpload(this)">
         <div class="upload-icon">📷</div>
         <div class="upload-text">Maak een foto of kies een afbeelding</div>
-        <div class="upload-sub">JPG of PNG — zorg voor goede belichting</div>
+        <div class="upload-sub">JPG, PNG of WebP — zorg voor goede belichting</div>
       </label>
       <div class="upload-selected" id="photoSelected"><span>📷</span><span id="photoName"></span></div>
     </div>
@@ -790,8 +817,9 @@
       <span class="output-header-sub">jouw reactie in gewone taal</span>
     </div>
     <div class="schrijfdit-form">
-      <div class="schrijfdit-question">Wat wil je zeggen of vragen aan de instantie?</div>
-      <textarea id="schrijfditInput" placeholder="Bijvoorbeeld: ik ben het niet eens met dit besluit, ik wil meer informatie, ik kan niet op tijd betalen..." style="min-height:120px"></textarea>
+      <div class="schrijfdit-question">Wat wil je zeggen of vragen?</div>
+      <div class="suggesties" id="suggestiesBtns"></div>
+      <textarea id="schrijfditInput" placeholder="Of typ hier zelf wat je wil zeggen..." style="min-height:100px"></textarea>
       <button class="submit-btn" id="schrijfditBtn" onclick="genereerReactie()" style="margin-top:0.75rem">
         Schrijf mijn reactie <span class="btn-arrow">→</span>
       </button>
@@ -933,7 +961,11 @@ EXTRA REGELS:
 - Maximaal 15 woorden per zin
 - Geen woorden als: derhalve, conform, inzake, betreffende, zulks, ingevolge
 - Als een datum of bedrag in de brief staat, benoem die altijd expliciet
-- Als er iets ondertekend of teruggestuurd moet worden, zeg dat altijd als eerste actiepunt`;
+- Als er iets ondertekend of teruggestuurd moet worden, zeg dat altijd als eerste actiepunt
+- Als er een referentienummer, kenmerk, zaaknummer of relatienummer in de brief staat, benoem die altijd expliciet in de actiepunten en bij "Bij twijfel:"
+- Gebruik NOOIT asterisks (*) of markdown opmaak in je antwoord
+- Schrijf de vier kopjes EXACT zo: WAT STAAT ER? / WAT MOET JE DOEN? / WAT KAN WACHTEN? / WAT ALS JE NIETS DOET?
+- Zet actiepunten ALTIJD als genummerde lijst: 1. tekst, 2. tekst, etc.`;
 
     try {
       const response = await fetch('/api/chat', {
@@ -963,7 +995,14 @@ EXTRA REGELS:
     }
   }
 
-  function renderOutput(text) {
+  function renderOutput(rawText) {
+    // Clean all markdown artifacts
+    let text = rawText
+      .replace(/\*\*/g, '')
+      .replace(/\*/g, '')
+      .replace(/##/g, '')
+      .trim();
+
     const sections = [
       { key: 'WAT STAAT ER?', label: 'Wat staat er?', isAction: false },
       { key: 'WAT MOET JE DOEN?', label: 'Jouw actiepunten', isAction: true },
@@ -985,16 +1024,22 @@ EXTRA REGELS:
       const endIdx = nextKeys.length ? Math.min(...nextKeys) : text.length;
 
       let content = text.substring(contentStart, endIdx).trim();
-      const lines = content.split('\n').map(l => l.trim()).filter(Boolean);
-      const bulletLines = lines.filter(l => /^[-•*]|^\d+[.)\s]/.test(l)).map(l => l.replace(/^[-•*]\s*|^\d+[.)\s]+/, ''));
-      const textLines = lines.filter(l => !/^[-•*]|^\d+[.)\s]/.test(l));
+      
+      // Remove any "Bij twijfel" line from section content
+      content = content.replace(/Bij twijfel[^\n]*/g, '').trim();
+      
+      const lines = content.split('\n').map(l => l.trim()).filter(l => l.length > 2);
+      const isListItem = l => /^\d+[.)\s]/.test(l) || /^[-•]/.test(l);
+      const cleanItem = l => l.replace(/^\d+[.)\s]+/, '').replace(/^[-•]\s*/, '').trim();
+      
+      const listItems = lines.filter(isListItem).map(cleanItem).filter(l => l.length > 2);
+      const textLines = lines.filter(l => !isListItem(l)).filter(l => l.length > 2);
 
       if (!firstBlock) html += '<div class="output-divider"></div>';
       firstBlock = false;
 
       if (section.isAction) {
-        // Prominent action block
-        const items = bulletLines.length ? bulletLines : textLines;
+        const items = listItems.length ? listItems : textLines;
         html += `
           <div class="action-block">
             <div class="action-header">
@@ -1004,38 +1049,37 @@ EXTRA REGELS:
             <ul class="action-list">
               ${items.map(item => `<li>${item}</li>`).join('')}
             </ul>
-          </div>
-        `;
+          </div>`;
       } else {
-        // Regular block
         let formatted = '';
-        if (bulletLines.length) {
+        if (listItems.length) {
           const intro = textLines.join(' ');
           formatted = (intro ? `<p style="margin-bottom:0.5rem">${intro}</p>` : '') +
             '<ul style="list-style:none;padding:0">' +
-            bulletLines.map(b => `<li style="padding:0.3rem 0 0.3rem 1.2rem;position:relative"><span style="position:absolute;left:0;color:var(--accent)">→</span>${b}</li>`).join('') +
+            listItems.map(b => `<li style="padding:0.3rem 0 0.3rem 1.2rem;position:relative"><span style="position:absolute;left:0;color:var(--accent)">→</span>${b}</li>`).join('') +
             '</ul>';
         } else {
           formatted = textLines.join('<br>');
         }
-
         html += `
           <div class="output-block">
             <div class="block-label">${section.label}</div>
             <div class="block-text">${formatted}</div>
-          </div>
-        `;
+          </div>`;
       }
     });
 
     // Closing note
-    const closingMatch = text.match(/Bij twijfel[^.]+\./);
+    const closingMatch = text.match(/Bij twijfel[^.\n]+[.]/);
     if (closingMatch) {
       html += `<div class="output-divider"></div><div class="closing-note">💬 ${closingMatch[0]}</div>`;
     }
 
     document.getElementById('outputBody').innerHTML = html;
     document.getElementById('outputCard').classList.add('visible');
+    
+    // Generate SchrijfDit suggestions based on output
+    genereerSuggesties(text);
     document.getElementById('schrijfditTrigger').style.display = 'block';
     document.getElementById('schrijfditCard').style.display = 'none';
     document.getElementById('schrijfditOutput').style.display = 'none';
@@ -1074,6 +1118,49 @@ EXTRA REGELS:
 
   function hideError() {
     document.getElementById('errorBox').classList.remove('visible');
+  }
+
+  function genereerSuggesties(outputText) {
+    // Smart suggestions based on content
+    const suggestions = [];
+    const lower = outputText.toLowerCase();
+    
+    if (lower.includes('betaal') || lower.includes('bedrag') || lower.includes('euro') || lower.includes('schuld')) {
+      suggestions.push('Ik kan dit (nu) niet betalen');
+      suggestions.push('Ik wil een betalingsregeling');
+    }
+    if (lower.includes('bezwaar') || lower.includes('besluit') || lower.includes('weiger') || lower.includes('afgewezen')) {
+      suggestions.push('Ik ben het hier niet mee eens');
+      suggestions.push('Ik wil bezwaar maken');
+    }
+    if (lower.includes('vergunning') || lower.includes('aanvraag') || lower.includes('melding')) {
+      suggestions.push('Ik wil meer informatie');
+      suggestions.push('Ik heb een vraag over mijn aanvraag');
+    }
+    if (lower.includes('datum') || lower.includes('deadline') || lower.includes('termijn') || lower.includes('voor')) {
+      suggestions.push('Ik heb meer tijd nodig');
+    }
+    
+    // Always add generic options
+    if (suggestions.length < 2) suggestions.push('Ik wil meer informatie');
+    suggestions.push('Ik heb een andere vraag');
+
+    const container = document.getElementById('suggestiesBtns');
+    container.innerHTML = suggestions.slice(0, 4).map(s => 
+      `<button class="suggestie-btn" onclick="kiesSuggestie(this, '${s}')">${s}</button>`
+    ).join('') + `<button class="suggestie-btn" onclick="kiesSuggestie(this, '')">Anders →</button>`;
+  }
+
+  function kiesSuggestie(btn, tekst) {
+    document.querySelectorAll('.suggestie-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const input = document.getElementById('schrijfditInput');
+    if (tekst) {
+      input.value = tekst;
+    } else {
+      input.value = '';
+      input.focus();
+    }
   }
 
   function openSchrijfDit() {
