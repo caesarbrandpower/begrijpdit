@@ -601,47 +601,61 @@
     }
     /* SchrijfDit trigger */
     .schrijfdit-trigger {
-      margin-top: 1rem;
+      margin-top: 1.5rem;
       background: var(--warm-dark);
-      border-radius: 14px;
-      padding: 1.25rem 1.5rem;
+      border-radius: 16px;
+      padding: 1.75rem 1.75rem 1.5rem;
       animation: fadeUp 0.4s ease both;
+    }
+
+    .schrijfdit-trigger-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
     }
 
     .schrijfdit-trigger-inner {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 1rem;
-      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
     }
 
-    .schrijfdit-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .schrijfdit-icon { font-size: 2rem; flex-shrink: 0; line-height: 1; }
+
+    .schrijfdit-trigger-text {}
 
     .schrijfdit-title {
-      font-size: 0.9rem;
-      font-weight: 600;
+      font-family: 'Merriweather', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
       color: white;
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.4rem;
+      line-height: 1.4;
     }
 
     .schrijfdit-sub {
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.6);
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.6;
     }
 
     .schrijfdit-btn {
-      margin-left: auto;
+      width: 100%;
       background: var(--accent);
       color: white;
       border: none;
-      padding: 0.65rem 1.25rem;
+      padding: 0.9rem 1.5rem;
       border-radius: 10px;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.82rem;
+      font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
-      white-space: nowrap;
       transition: background 0.2s;
+      text-align: center;
     }
 
     .schrijfdit-btn:hover { background: var(--accent-dark); }
@@ -734,7 +748,7 @@
 <div class="tool-wrapper">
 
   <div class="privacy-pill">
-    🔒 Je tekst wordt niet opgeslagen en verdwijnt na je sessie
+    🔓 Je tekst wordt niet opgeslagen en verdwijnt na je sessie
   </div>
 
   <div class="input-tabs">
@@ -799,14 +813,15 @@
 
   <!-- SchrijfDit trigger -->
   <div class="schrijfdit-trigger" id="schrijfditTrigger" style="display:none">
+    <div class="schrijfdit-trigger-label">Stap 2</div>
     <div class="schrijfdit-trigger-inner">
       <div class="schrijfdit-icon">✍️</div>
-      <div>
+      <div class="schrijfdit-trigger-text">
         <div class="schrijfdit-title">Wil je reageren op deze brief?</div>
-        <div class="schrijfdit-sub">SchrijfDit helpt je een passende reactie schrijven in gewone taal.</div>
+        <div class="schrijfdit-sub">SchrijfDit schrijft een passende reactie voor je — in gewone, nette taal.</div>
       </div>
-      <button class="schrijfdit-btn" onclick="openSchrijfDit()">Schrijf een reactie →</button>
     </div>
+    <button class="schrijfdit-btn" onclick="openSchrijfDit()">Schrijf een reactie →</button>
   </div>
 
   <!-- SchrijfDit card -->
@@ -962,7 +977,8 @@ EXTRA REGELS:
 - Geen woorden als: derhalve, conform, inzake, betreffende, zulks, ingevolge
 - Als een datum of bedrag in de brief staat, benoem die altijd expliciet
 - Als er iets ondertekend of teruggestuurd moet worden, zeg dat altijd als eerste actiepunt
-- Als er een referentienummer, kenmerk, zaaknummer of relatienummer in de brief staat, benoem die altijd expliciet in de actiepunten en bij "Bij twijfel:"
+- Als er een referentienummer, kenmerk, zaaknummer of relatienummer in de brief staat: noem dit ALTIJD in "WAT STAAT ER?", in de actiepunten, én in "Bij twijfel:"
+- Bij twijfel: schrijf ALTIJD het telefoonnummer uit de brief erbij, plus het kenmerk/zaaknummer. Bijvoorbeeld: "Bij twijfel: bel 14058 en noem zaaknummer GM-2025-029021."
 - Gebruik NOOIT asterisks (*) of markdown opmaak in je antwoord
 - Schrijf de vier kopjes EXACT zo: WAT STAAT ER? / WAT MOET JE DOEN? / WAT KAN WACHTEN? / WAT ALS JE NIETS DOET?
 - Zet actiepunten ALTIJD als genummerde lijst: 1. tekst, 2. tekst, etc.`;
