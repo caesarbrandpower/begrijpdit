@@ -571,6 +571,124 @@
       .tool-wrapper { padding: 0 1.25rem 4rem; }
       .output-footer { flex-direction: column; align-items: flex-start; }
     }
+
+    /* SchrijfDit trigger */
+    .schrijfdit-trigger {
+      margin-top: 1rem;
+      background: var(--warm-dark);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .schrijfdit-trigger-inner {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .schrijfdit-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+    .schrijfdit-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 0.2rem;
+    }
+
+    .schrijfdit-sub {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .schrijfdit-btn {
+      margin-left: auto;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.65rem 1.25rem;
+      border-radius: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .schrijfdit-btn:hover { background: var(--accent-dark); }
+
+    /* SchrijfDit card */
+    .schrijfdit-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(44,36,32,0.06);
+      margin-top: 1rem;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .schrijfdit-form {
+      padding: 1.5rem;
+    }
+
+    .schrijfdit-question {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+    }
+
+    .schrijfdit-output {
+      padding: 0 1.5rem 1.5rem;
+    }
+
+    .schrijfdit-result-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin-bottom: 0.75rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .schrijfdit-result {
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: var(--ink);
+      font-weight: 300;
+      white-space: pre-wrap;
+      background: var(--bg);
+      padding: 1.25rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+
+    .schrijfdit-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .copy-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.55rem 1.1rem;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover { background: var(--accent-dark); }
   </style>
 </head>
 <body>
@@ -583,7 +701,7 @@
 
 <div class="hero">
   <h1><span class="h1-main">Snap wat er staat.</span><br><em class="h1-sub">En wat je moet doen.</em></h1>
-  <p>Ontvang je een moeilijke brief, mail of besluit van een instantie? Plak de tekst hieronder en krijg meteen uitleg in gewone taal &mdash; inclusief wat je concreet moet doen.</p>
+  <p>Ontvang je een moeilijke brief, mail, contract of besluit van een organisatie of instantie? Plak de tekst hieronder en krijg meteen uitleg in gewone taal &mdash; inclusief wat je concreet moet doen.</p>
 </div>
 
 <div class="tool-wrapper">
@@ -652,6 +770,46 @@
     </div>
   </div>
 
+  <!-- SchrijfDit trigger -->
+  <div class="schrijfdit-trigger" id="schrijfditTrigger" style="display:none">
+    <div class="schrijfdit-trigger-inner">
+      <div class="schrijfdit-icon">✍️</div>
+      <div>
+        <div class="schrijfdit-title">Wil je reageren op deze brief?</div>
+        <div class="schrijfdit-sub">SchrijfDit helpt je een passende reactie schrijven in gewone taal.</div>
+      </div>
+      <button class="schrijfdit-btn" onclick="openSchrijfDit()">Schrijf een reactie →</button>
+    </div>
+  </div>
+
+  <!-- SchrijfDit card -->
+  <div class="schrijfdit-card" id="schrijfditCard" style="display:none">
+    <div class="output-header">
+      <div class="output-check" style="background:#e8f0fe;color:#1a56db">✍</div>
+      <span class="output-header-text">SchrijfDit</span>
+      <span class="output-header-sub">jouw reactie in gewone taal</span>
+    </div>
+    <div class="schrijfdit-form">
+      <div class="schrijfdit-question">Wat wil je zeggen of vragen aan de instantie?</div>
+      <textarea id="schrijfditInput" placeholder="Bijvoorbeeld: ik ben het niet eens met dit besluit, ik wil meer informatie, ik kan niet op tijd betalen..." style="min-height:120px"></textarea>
+      <button class="submit-btn" id="schrijfditBtn" onclick="genereerReactie()" style="margin-top:0.75rem">
+        Schrijf mijn reactie <span class="btn-arrow">→</span>
+      </button>
+    </div>
+    <div class="loading" id="schrijfditLoading">
+      <div class="loading-ring"></div>
+      <div class="loading-text">We schrijven je reactie...</div>
+    </div>
+    <div class="schrijfdit-output" id="schrijfditOutput" style="display:none">
+      <div class="schrijfdit-result-label">Jouw reactie</div>
+      <div class="schrijfdit-result" id="schrijfditResult"></div>
+      <div class="schrijfdit-actions">
+        <button class="copy-btn" onclick="kopieerReactie()">📋 Kopieer tekst</button>
+        <button class="reset-btn" onclick="resetSchrijfDit()">↺ Andere reactie</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <footer>
@@ -664,6 +822,8 @@
   let pdfBase64 = null;
   let photoBase64 = null;
   let photoMimeType = null;
+  let lastBriefText = '';
+  let lastOutputText = '';
 
   function switchTab(tab) {
     activeTab = tab;
@@ -747,7 +907,7 @@
     document.getElementById('submitBtn').disabled = true;
     document.getElementById('outputCard').classList.remove('visible');
 
-    const systemPrompt = `Je bent BegrijpDit, een uitlegassistent van NoRobot. Je helpt mensen begrijpen wat officiële berichten van instanties betekenen — zoals brieven van de gemeente, belastingdienst, zorgverzekeraar of woningcorporatie.
+    const systemPrompt = `Je bent BegrijpDit, een uitlegassistent van NoRobot. Je helpt mensen begrijpen wat officiële berichten, contracten en juridische documenten betekenen — zoals brieven van de gemeente, belastingdienst, zorgverzekeraar, woningcorporatie, maar ook hypotheekaktes, huurcontracten, arbeidsovereenkomsten en notariële teksten.
 
 JOUW TAAK:
 Leg de brief uit alsof je het uitlegt aan iemand die weinig leest of weinig te maken heeft met officiële taal. Gebruik altijd korte zinnen. Gebruik alleen woorden die iedereen kent. Nooit juridische taal. Nooit lange zinnen. Schrijf rustig en vriendelijk.
@@ -777,24 +937,23 @@ EXTRA REGELS:
 
     try {
       const response = await fetch('/api/chat', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 1000,
-    system: systemPrompt,
-    messages: messages
-  })
-});
-const data = await response.json();
-if (!response.ok) {
-throw new Error(response.status);
-}
-const text = data.content?.find(b => b.type === 'text')?.text || data.error?.message || 'Geen antwoord ontvangen';
-renderOutput(text);
-      
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 2000,
+          system: systemPrompt,
+          messages: messages
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error?.message || response.status);
+      const text = data.content?.find(b => b.type === 'text')?.text || 'Geen antwoord ontvangen';
+      lastBriefText = activeTab === 'text' ? document.getElementById('briefText').value.trim() : '[document]';
+      lastOutputText = text;
+      renderOutput(text);
+
     } catch (err) {
       showError('Er ging iets mis. Controleer je verbinding en probeer het opnieuw.');
       console.error(err);
@@ -805,15 +964,13 @@ renderOutput(text);
   }
 
   function renderOutput(text) {
-const sections = [
-  { key: 'WAT STAAT ER?', label: 'Wat staat er?', isAction: false },
-  { key: 'WAT MOET JE DOEN?', label: 'Jouw actiepunten', isAction: true },
-  { key: 'WAT KAN WACHTEN?', label: 'Wat kan wachten?', isAction: false },
-  { key: 'WAT ALS JE NIETS DOET?', label: 'Wat als je niets doet?', isAction: false },
-];
-text = text.replace(/\*\*/g, '').replace(/##/g, '').trim();
-    console.log('OUTPUT:', text);
-    
+    const sections = [
+      { key: 'WAT STAAT ER?', label: 'Wat staat er?', isAction: false },
+      { key: 'WAT MOET JE DOEN?', label: 'Jouw actiepunten', isAction: true },
+      { key: 'WAT KAN WACHTEN?', label: 'Wat kan wachten?', isAction: false },
+      { key: 'WAT ALS JE NIETS DOET?', label: 'Wat als je niets doet?', isAction: false },
+    ];
+
     let html = '';
     let firstBlock = true;
 
@@ -879,6 +1036,10 @@ text = text.replace(/\*\*/g, '').replace(/##/g, '').trim();
 
     document.getElementById('outputBody').innerHTML = html;
     document.getElementById('outputCard').classList.add('visible');
+    document.getElementById('schrijfditTrigger').style.display = 'block';
+    document.getElementById('schrijfditCard').style.display = 'none';
+    document.getElementById('schrijfditOutput').style.display = 'none';
+    document.getElementById('schrijfditInput').value = '';
     setTimeout(() => {
       document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
@@ -887,7 +1048,10 @@ text = text.replace(/\*\*/g, '').replace(/##/g, '').trim();
   function resetTool() {
     document.getElementById('briefText').value = '';
     document.getElementById('outputCard').classList.remove('visible');
+    document.getElementById('schrijfditTrigger').style.display = 'none';
+    document.getElementById('schrijfditCard').style.display = 'none';
     pdfBase64 = null; photoBase64 = null; photoMimeType = null;
+    lastBriefText = ''; lastOutputText = '';
     document.getElementById('pdfSelected').classList.remove('visible');
     document.getElementById('photoSelected').classList.remove('visible');
     document.getElementById('pdfInput').value = '';
@@ -910,6 +1074,93 @@ text = text.replace(/\*\*/g, '').replace(/##/g, '').trim();
 
   function hideError() {
     document.getElementById('errorBox').classList.remove('visible');
+  }
+
+  function openSchrijfDit() {
+    document.getElementById('schrijfditCard').style.display = 'block';
+    document.getElementById('schrijfditTrigger').style.display = 'none';
+    setTimeout(() => {
+      document.getElementById('schrijfditCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('schrijfditInput').focus();
+    }, 100);
+  }
+
+  async function genereerReactie() {
+    const intentie = document.getElementById('schrijfditInput').value.trim();
+    if (!intentie || intentie.length < 5) {
+      alert('Vertel eerst kort wat je wil zeggen of vragen.');
+      return;
+    }
+
+    document.getElementById('schrijfditBtn').disabled = true;
+    document.getElementById('schrijfditLoading').classList.add('visible');
+    document.getElementById('schrijfditOutput').style.display = 'none';
+
+    const systemPrompt = `Je bent SchrijfDit, een schrijfassistent van NoRobot. Je helpt mensen een heldere, nette reactie schrijven op een brief of besluit van een instantie.
+
+JOUW TAAK:
+Schrijf een reactiebrief in gewone, correcte taal. De brief moet:
+- Vriendelijk maar duidelijk zijn
+- In jij-vorm geschreven zijn (maar de brief zelf in ik-vorm want het is de brief van de gebruiker)
+- Kort en to the point zijn — maximaal 3 alinea's
+- Beginnen met een aanhef zoals "Geachte mevrouw/meneer,"
+- Eindigen met "Met vriendelijke groet," gevolgd door een lege regel voor de naam
+
+SCHRIJF ALLEEN DE BRIEF. Geen uitleg, geen toelichting eromheen.`;
+
+    const userMessage = `Dit was de originele brief:
+
+${lastBriefText}
+
+Dit is wat ik wil zeggen of vragen:
+${intentie}
+
+Schrijf een passende reactiebrief.`;
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userMessage }]
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error?.message || response.status);
+      const resultText = data.content?.find(b => b.type === 'text')?.text || 'Geen reactie ontvangen';
+
+      document.getElementById('schrijfditResult').textContent = resultText;
+      document.getElementById('schrijfditOutput').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('schrijfditOutput').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+
+    } catch (err) {
+      alert('Er ging iets mis. Probeer het opnieuw.');
+      console.error(err);
+    } finally {
+      document.getElementById('schrijfditBtn').disabled = false;
+      document.getElementById('schrijfditLoading').classList.remove('visible');
+    }
+  }
+
+  function kopieerReactie() {
+    const text = document.getElementById('schrijfditResult').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = '✓ Gekopieerd!';
+      setTimeout(() => { btn.textContent = '📋 Kopieer tekst'; }, 2000);
+    });
+  }
+
+  function resetSchrijfDit() {
+    document.getElementById('schrijfditInput').value = '';
+    document.getElementById('schrijfditOutput').style.display = 'none';
+    document.getElementById('schrijfditInput').focus();
   }
 </script>
 
