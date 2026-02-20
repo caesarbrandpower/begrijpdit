@@ -608,13 +608,19 @@
       animation: fadeUp 0.4s ease both;
     }
 
-    .schrijfdit-trigger-label {
-      font-size: 0.62rem;
+    .schrijfdit-brand {
+      font-family: 'Merriweather', serif;
+      font-size: 0.82rem;
       font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
       color: var(--accent);
-      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.3rem;
+    }
+
+    .schrijfdit-brand-header {
+      font-family: 'Merriweather', serif;
+      font-weight: 700;
+      color: var(--accent);
     }
 
     .schrijfdit-trigger-inner {
@@ -813,12 +819,12 @@
 
   <!-- SchrijfDit trigger -->
   <div class="schrijfdit-trigger" id="schrijfditTrigger" style="display:none">
-    <div class="schrijfdit-trigger-label">Stap 2</div>
     <div class="schrijfdit-trigger-inner">
       <div class="schrijfdit-icon">✍️</div>
       <div class="schrijfdit-trigger-text">
+        <div class="schrijfdit-brand">SchrijfDit</div>
         <div class="schrijfdit-title">Wil je reageren op deze brief?</div>
-        <div class="schrijfdit-sub">SchrijfDit schrijft een passende reactie voor je — in gewone, nette taal.</div>
+        <div class="schrijfdit-sub">Schrijft een passende reactie voor je — in gewone, nette taal.</div>
       </div>
     </div>
     <button class="schrijfdit-btn" onclick="openSchrijfDit()">Schrijf een reactie →</button>
@@ -828,7 +834,7 @@
   <div class="schrijfdit-card" id="schrijfditCard" style="display:none">
     <div class="output-header">
       <div class="output-check" style="background:#e8f0fe;color:#1a56db">✍</div>
-      <span class="output-header-text">SchrijfDit</span>
+      <span class="output-header-text schrijfdit-brand-header">SchrijfDit</span>
       <span class="output-header-sub">jouw reactie in gewone taal</span>
     </div>
     <div class="schrijfdit-form">
@@ -901,6 +907,50 @@
     };
     reader.readAsDataURL(file);
   }
+
+  // Drag and drop for PDF
+  function initDragDrop() {
+    const pdfZone = document.querySelector('#tab-pdf .upload-zone');
+    const photoZone = document.querySelector('#tab-photo .upload-zone');
+
+    [pdfZone, photoZone].forEach(zone => {
+      zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        zone.style.background = 'var(--accent-light)';
+        zone.style.borderColor = 'var(--accent)';
+      });
+      zone.addEventListener('dragleave', () => {
+        zone.style.background = '';
+        zone.style.borderColor = '';
+      });
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.style.background = '';
+        zone.style.borderColor = '';
+        const file = e.dataTransfer.files[0];
+        if (!file) return;
+        if (zone === pdfZone) {
+          if (!file.name.endsWith('.pdf')) {
+            showError('Kies een PDF-bestand.');
+            return;
+          }
+          const fakeInput = { files: [file] };
+          handlePdfUpload(fakeInput);
+        } else {
+          const allowed = ['image/jpeg','image/png','image/webp','image/gif'];
+          if (!allowed.includes(file.type)) {
+            showError('Kies een JPG, PNG of WebP afbeelding.');
+            return;
+          }
+          const fakeInput = { files: [file] };
+          handlePhotoUpload(fakeInput);
+        }
+      });
+    });
+  }
+
+  // Init on load
+  document.addEventListener('DOMContentLoaded', initDragDrop);
 
   function updateCount() {
     const len = document.getElementById('briefText').value.length;
@@ -1204,10 +1254,15 @@ EXTRA REGELS:
 JOUW TAAK:
 Schrijf een reactiebrief in gewone, correcte taal. De brief moet:
 - Vriendelijk maar duidelijk zijn
-- In jij-vorm geschreven zijn (maar de brief zelf in ik-vorm want het is de brief van de gebruiker)
+- In ik-vorm geschreven zijn (het is de brief van de gebruiker)
 - Kort en to the point zijn — maximaal 3 alinea's
 - Beginnen met een aanhef zoals "Geachte mevrouw/meneer,"
 - Eindigen met "Met vriendelijke groet," gevolgd door een lege regel voor de naam
+
+VERPLICHT IN DE BRIEF:
+- Als er een zaaknummer, kenmerk, referentienummer of relatienummer in de originele brief staat, vermeld dit ALTIJD in de aanhef of eerste zin: bijv. "Betreft: zaaknummer GM-2025-029021"
+- Als er een afzenderadres in de brief staat, zet dat bovenaan als adressering
+- Als er een datum of deadline in de brief staat, verwijs daar concreet naar
 
 SCHRIJF ALLEEN DE BRIEF. Geen uitleg, geen toelichting eromheen.`;
 
