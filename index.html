@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BegrijpDit — Snap wat er staat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #faf7f2;
+      --surface: #ffffff;
+      --ink: #2c2420;
+      --mid: #7a6b63;
+      --soft: #b0a49c;
+      --border: rgba(44,36,32,0.1);
+      --accent: #c4622d;
+      --accent-dark: #a84f22;
+      --accent-light: #fdf0e8;
+      --accent-mid: #e8855a;
+      --action-bg: #fff8f0;
+      --action-border: #f5c9a8;
+      --warm-dark: #3d2e28;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      padding: 1.25rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: rgba(250,247,242,0.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+    }
+
+    .logo {
+      font-family: 'Merriweather', serif;
+      font-weight: 600;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+
+    .logo span { color: var(--accent); }
+
+    .by-norobot {
+      font-size: 0.72rem;
+      color: var(--soft);
+      font-style: italic;
+      font-family: 'Merriweather', serif;
+      font-weight: 300;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 5rem 2.5rem 3rem;
+      max-width: 660px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .h1-main {
+      font-size: 1em;
+    }
+
+    .h1-sub {
+      font-size: 0.72em;
+      opacity: 0.85;
+    }
+
+    .hero h1 {
+      font-family: 'Merriweather', serif;
+      font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+      color: var(--warm-dark);
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--mid);
+      font-weight: 300;
+      max-width: 460px;
+    }
+
+    /* ── TOOL ── */
+    .tool-wrapper {
+      max-width: 660px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 0 2.5rem 6rem;
+      flex: 1;
+    }
+
+    .privacy-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--mid);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.9rem;
+      border-radius: 100px;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Input */
+    .input-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(44,36,32,0.05);
+      margin-bottom: 0.875rem;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .input-card:focus-within {
+      border-color: var(--accent-mid);
+      box-shadow: 0 4px 24px rgba(196,98,45,0.1);
+    }
+
+    .input-top {
+      padding: 0.9rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .input-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--soft);
+    }
+
+    .char-count {
+      font-size: 0.7rem;
+      color: var(--soft);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 190px;
+      padding: 1.25rem;
+      border: none;
+      outline: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--ink);
+      background: transparent;
+      resize: vertical;
+      font-weight: 300;
+    }
+
+    textarea::placeholder {
+      color: #ccc5bd;
+    }
+
+    /* Button */
+    .submit-btn {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      box-shadow: 0 3px 14px rgba(196,98,45,0.3);
+      letter-spacing: 0.01em;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background: var(--accent-dark);
+      box-shadow: 0 5px 20px rgba(196,98,45,0.4);
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:active:not(:disabled) { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+
+    .btn-arrow { transition: transform 0.2s; }
+    .submit-btn:hover:not(:disabled) .btn-arrow { transform: translateX(4px); }
+
+    /* Tabs */
+    .input-tabs {
+      display: flex;
+      margin-bottom: 0.875rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.7rem 0.5rem;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--soft);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .tab-btn:first-child { border-radius: 10px 0 0 10px; }
+    .tab-btn:last-child { border-radius: 0 10px 10px 0; border-left: none; }
+    .tab-btn:not(:first-child):not(:last-child) { border-left: none; }
+
+    .tab-btn.active {
+      background: var(--accent-light);
+      border-color: var(--accent-mid);
+      color: var(--accent-dark);
+    }
+
+    .tab-btn:hover:not(.active) { background: var(--bg); color: var(--mid); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .upload-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 160px;
+      padding: 2rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-align: center;
+      gap: 0.75rem;
+    }
+
+    .upload-zone:hover { background: var(--bg); }
+    .upload-zone input[type="file"] { display: none; }
+
+    .upload-icon { font-size: 2rem; line-height: 1; }
+
+    .upload-text {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .upload-sub { font-size: 0.75rem; color: var(--soft); }
+
+    .upload-selected {
+      display: none;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.7rem 1rem;
+      background: var(--accent-light);
+      border-top: 1px solid var(--action-border);
+      font-size: 0.82rem;
+      color: var(--accent-dark);
+      font-weight: 500;
+    }
+
+    .upload-selected.visible { display: flex; }
+
+    /* Loading */
+    .loading {
+      display: none;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    .loading.visible { display: block; }
+
+    .loading-ring {
+      width: 32px;
+      height: 32px;
+      border: 2.5px solid var(--accent-light);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text {
+      font-size: 0.88rem;
+      color: var(--mid);
+      font-style: italic;
+      font-family: 'Merriweather', serif;
+      font-weight: 300;
+    }
+
+    /* Output */
+    .output-card {
+      display: none;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(44,36,32,0.06);
+      animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      margin-top: 1.25rem;
+    }
+    .output-card.visible { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .output-header {
+      padding: 1.1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .output-check {
+      width: 22px;
+      height: 22px;
+      background: #e8f5e9;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: #2e7d32;
+      flex-shrink: 0;
+    }
+
+    .output-header-text {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .output-header-sub {
+      font-size: 0.72rem;
+      color: var(--soft);
+      margin-left: auto;
+      font-style: italic;
+      font-family: 'Merriweather', serif;
+      font-weight: 300;
+    }
+
+    .output-body {
+      padding: 1.75rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Regular blocks */
+    .output-block {
+      animation: fadeUp 0.35s ease both;
+    }
+    .output-block:nth-child(1) { animation-delay: 0.05s; }
+    .output-block:nth-child(3) { animation-delay: 0.1s; }
+    .output-block:nth-child(4) { animation-delay: 0.15s; }
+
+    .block-label {
+      font-size: 0.67rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin-bottom: 0.5rem;
+    }
+
+    .block-text {
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: #3d3028;
+      font-weight: 300;
+    }
+
+    /* ACTION BLOCK — prominent */
+    .action-block {
+      background: var(--action-bg);
+      border: 1.5px solid var(--action-border);
+      border-radius: 12px;
+      padding: 1.25rem 1.25rem 1rem;
+      animation: fadeUp 0.35s ease both;
+      animation-delay: 0.08s;
+    }
+
+    .action-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .action-icon {
+      width: 26px;
+      height: 26px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .action-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-dark);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .action-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .action-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--warm-dark);
+      font-weight: 400;
+    }
+
+    .action-list li::before {
+      content: '→';
+      color: var(--accent);
+      font-weight: 600;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    /* Divider */
+    .output-divider {
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Closing note */
+    .closing-note {
+      font-size: 0.82rem;
+      color: var(--mid);
+      font-style: italic;
+      font-family: 'Merriweather', serif;
+      font-weight: 300;
+      line-height: 1.7;
+      padding-top: 0.25rem;
+    }
+
+    /* Output footer */
+    .output-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .disclaimer {
+      font-size: 0.7rem;
+      color: var(--soft);
+      font-style: italic;
+      line-height: 1.5;
+      max-width: 360px;
+    }
+
+    .reset-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.55rem 1.1rem;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--mid);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Error */
+    .error-box {
+      display: none;
+      margin-top: 0.75rem;
+      padding: 0.9rem 1.1rem;
+      background: #fff5f5;
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      color: #b91c1c;
+    }
+    .error-box.visible { display: block; }
+
+    /* Footer */
+    footer {
+      padding: 1.75rem 2.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .footer-logo {
+      font-family: 'Merriweather', serif;
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--soft);
+    }
+
+    .footer-logo span { color: var(--accent); font-weight: 600; }
+
+    .footer-note {
+      font-size: 0.7rem;
+      color: var(--soft);
+      font-style: italic;
+    }
+
+    @media (max-width: 560px) {
+      header, footer { padding: 1.25rem; }
+      .hero { padding: 3rem 1.25rem 2rem; }
+      .tool-wrapper { padding: 0 1.25rem 4rem; }
+      .output-footer { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* SchrijfDit trigger */
+    .schrijfdit-trigger {
+      margin-top: 1rem;
+      background: var(--warm-dark);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .schrijfdit-trigger-inner {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .schrijfdit-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+    .schrijfdit-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 0.2rem;
+    }
+
+    .schrijfdit-sub {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .schrijfdit-btn {
+      margin-left: auto;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.65rem 1.25rem;
+      border-radius: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .schrijfdit-btn:hover { background: var(--accent-dark); }
+
+    /* SchrijfDit card */
+    .schrijfdit-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(44,36,32,0.06);
+      margin-top: 1rem;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .schrijfdit-form {
+      padding: 1.5rem;
+    }
+
+    .schrijfdit-question {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+    }
+
+    .schrijfdit-output {
+      padding: 0 1.5rem 1.5rem;
+    }
+
+    .schrijfdit-result-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin-bottom: 0.75rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .schrijfdit-result {
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: var(--ink);
+      font-weight: 300;
+      white-space: pre-wrap;
+      background: var(--bg);
+      padding: 1.25rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+
+    .schrijfdit-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .copy-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.55rem 1.1rem;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover { background: var(--accent-dark); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Begrijp<span>Dit</span></div>
+  <span class="by-norobot">Gewone taal voor iedereen</span>
+
+</header>
+
+<div class="hero">
+  <h1><span class="h1-main">Snap wat er staat.</span><br><em class="h1-sub">En wat je moet doen.</em></h1>
+  <p>Ontvang je een moeilijke brief, mail, contract of besluit van een organisatie of instantie? Plak de tekst hieronder en krijg meteen uitleg in gewone taal &mdash; inclusief wat je concreet moet doen.</p>
+</div>
+
+<div class="tool-wrapper">
+
+  <div class="privacy-pill">
+    🔒 Je tekst wordt niet opgeslagen en verdwijnt na je sessie
+  </div>
+
+  <div class="input-tabs">
+    <button class="tab-btn active" onclick="switchTab('text')">✏️ Tekst plakken</button>
+    <button class="tab-btn" onclick="switchTab('pdf')">📄 PDF uploaden</button>
+    <button class="tab-btn" onclick="switchTab('photo')">📷 Foto uploaden</button>
+  </div>
+
+  <div class="input-card">
+    <div class="tab-panel active" id="tab-text">
+      <div class="input-top">
+        <span class="input-label">Plak hier je brief of mail</span>
+        <span class="char-count" id="charCount">0 tekens</span>
+      </div>
+      <textarea id="briefText" placeholder="Kopieer de volledige tekst van je brief of mail en plak hem hier..." oninput="updateCount()"></textarea>
+    </div>
+    <div class="tab-panel" id="tab-pdf">
+      <label class="upload-zone" for="pdfInput">
+        <input type="file" id="pdfInput" accept=".pdf" onchange="handlePdfUpload(this)">
+        <div class="upload-icon">📄</div>
+        <div class="upload-text">Klik om een PDF te kiezen</div>
+        <div class="upload-sub">of sleep hem hier naartoe</div>
+      </label>
+      <div class="upload-selected" id="pdfSelected"><span>📄</span><span id="pdfName"></span></div>
+    </div>
+    <div class="tab-panel" id="tab-photo">
+      <label class="upload-zone" for="photoInput">
+        <input type="file" id="photoInput" accept="image/*" capture="environment" onchange="handlePhotoUpload(this)">
+        <div class="upload-icon">📷</div>
+        <div class="upload-text">Maak een foto of kies een afbeelding</div>
+        <div class="upload-sub">JPG of PNG — zorg voor goede belichting</div>
+      </label>
+      <div class="upload-selected" id="photoSelected"><span>📷</span><span id="photoName"></span></div>
+    </div>
+  </div>
+
+  <button class="submit-btn" id="submitBtn" onclick="analysesBrief()">
+    Vertaal naar gewone taal <span class="btn-arrow">→</span>
+  </button>
+
+  <div class="error-box" id="errorBox"></div>
+
+  <div class="loading" id="loading">
+    <div class="loading-ring"></div>
+    <div class="loading-text">We lezen je brief zorgvuldig...</div>
+  </div>
+
+  <div class="output-card" id="outputCard">
+    <div class="output-header">
+      <div class="output-check">✓</div>
+      <span class="output-header-text">Uitleg van je brief</span>
+      <span class="output-header-sub">in gewone taal</span>
+    </div>
+
+    <div class="output-body" id="outputBody"></div>
+
+    <div class="output-footer">
+      <span class="disclaimer">BegrijpDit geeft uitleg, geen juridisch advies. Bij twijfel, neem contact op met de betreffende instantie of een vertrouwd persoon.</span>
+      <button class="reset-btn" onclick="resetTool()">← Nieuwe brief</button>
+    </div>
+  </div>
+
+  <!-- SchrijfDit trigger -->
+  <div class="schrijfdit-trigger" id="schrijfditTrigger" style="display:none">
+    <div class="schrijfdit-trigger-inner">
+      <div class="schrijfdit-icon">✍️</div>
+      <div>
+        <div class="schrijfdit-title">Wil je reageren op deze brief?</div>
+        <div class="schrijfdit-sub">SchrijfDit helpt je een passende reactie schrijven in gewone taal.</div>
+      </div>
+      <button class="schrijfdit-btn" onclick="openSchrijfDit()">Schrijf een reactie →</button>
+    </div>
+  </div>
+
+  <!-- SchrijfDit card -->
+  <div class="schrijfdit-card" id="schrijfditCard" style="display:none">
+    <div class="output-header">
+      <div class="output-check" style="background:#e8f0fe;color:#1a56db">✍</div>
+      <span class="output-header-text">SchrijfDit</span>
+      <span class="output-header-sub">jouw reactie in gewone taal</span>
+    </div>
+    <div class="schrijfdit-form">
+      <div class="schrijfdit-question">Wat wil je zeggen of vragen aan de instantie?</div>
+      <textarea id="schrijfditInput" placeholder="Bijvoorbeeld: ik ben het niet eens met dit besluit, ik wil meer informatie, ik kan niet op tijd betalen..." style="min-height:120px"></textarea>
+      <button class="submit-btn" id="schrijfditBtn" onclick="genereerReactie()" style="margin-top:0.75rem">
+        Schrijf mijn reactie <span class="btn-arrow">→</span>
+      </button>
+    </div>
+    <div class="loading" id="schrijfditLoading">
+      <div class="loading-ring"></div>
+      <div class="loading-text">We schrijven je reactie...</div>
+    </div>
+    <div class="schrijfdit-output" id="schrijfditOutput" style="display:none">
+      <div class="schrijfdit-result-label">Jouw reactie</div>
+      <div class="schrijfdit-result" id="schrijfditResult"></div>
+      <div class="schrijfdit-actions">
+        <button class="copy-btn" onclick="kopieerReactie()">📋 Kopieer tekst</button>
+        <button class="reset-btn" onclick="resetSchrijfDit()">↺ Andere reactie</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo"><span>BegrijpDit</span> — een initiatief van NoRobot</div>
+  <span class="footer-note">Geen opslag · Geen juridisch advies · Gemaakt voor mensen</span>
+</footer>
+
+<script>
+  let activeTab = 'text';
+  let pdfBase64 = null;
+  let photoBase64 = null;
+  let photoMimeType = null;
+  let lastBriefText = '';
+  let lastOutputText = '';
+
+  function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+      btn.classList.toggle('active', ['text','pdf','photo'][i] === tab);
+    });
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+  }
+
+  function handlePdfUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      pdfBase64 = e.target.result.split(',')[1];
+      document.getElementById('pdfName').textContent = file.name;
+      document.getElementById('pdfSelected').classList.add('visible');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handlePhotoUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    photoMimeType = file.type;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      photoBase64 = e.target.result.split(',')[1];
+      document.getElementById('photoName').textContent = file.name;
+      document.getElementById('photoSelected').classList.add('visible');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function updateCount() {
+    const len = document.getElementById('briefText').value.length;
+    document.getElementById('charCount').textContent = len.toLocaleString('nl') + ' tekens';
+  }
+
+  async function analysesBrief() {
+    let messages = [];
+
+    if (activeTab === 'text') {
+      const text = document.getElementById('briefText').value.trim();
+      if (!text || text.length < 20) {
+        showError('Plak eerst de tekst van je brief of mail hierboven.');
+        return;
+      }
+      messages = [{ role: 'user', content: 'Dit is het bericht dat ik wil begrijpen:\n\n' + text }];
+
+    } else if (activeTab === 'pdf') {
+      if (!pdfBase64) {
+        showError('Kies eerst een PDF-bestand.');
+        return;
+      }
+      messages = [{
+        role: 'user',
+        content: [
+          { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: pdfBase64 } },
+          { type: 'text', text: 'Dit is de brief die ik wil begrijpen. Leg hem uit.' }
+        ]
+      }];
+
+    } else if (activeTab === 'photo') {
+      if (!photoBase64) {
+        showError('Kies eerst een foto van je brief.');
+        return;
+      }
+      messages = [{
+        role: 'user',
+        content: [
+          { type: 'image', source: { type: 'base64', media_type: photoMimeType || 'image/jpeg', data: photoBase64 } },
+          { type: 'text', text: 'Dit is een foto van de brief die ik wil begrijpen. Lees de tekst en leg hem uit.' }
+        ]
+      }];
+    }
+
+    hideError();
+    setLoading(true);
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('outputCard').classList.remove('visible');
+
+    const systemPrompt = `Je bent BegrijpDit, een uitlegassistent van NoRobot. Je helpt mensen begrijpen wat officiële berichten, contracten en juridische documenten betekenen — zoals brieven van de gemeente, belastingdienst, zorgverzekeraar, woningcorporatie, maar ook hypotheekaktes, huurcontracten, arbeidsovereenkomsten en notariële teksten.
+
+JOUW TAAK:
+Leg de brief uit alsof je het uitlegt aan iemand die weinig leest of weinig te maken heeft met officiële taal. Gebruik altijd korte zinnen. Gebruik alleen woorden die iedereen kent. Nooit juridische taal. Nooit lange zinnen. Schrijf rustig en vriendelijk.
+
+GEBRUIK ALTIJD PRECIES DEZE STRUCTUUR:
+
+WAT STAAT ER?
+Leg in maximaal 3 korte zinnen uit waar de brief over gaat. Gebruik de simpelste woorden die je kent. Stel je voor dat je het uitlegt aan iemand die de brief voor het eerst ziet.
+
+WAT MOET JE DOEN?
+Geef maximaal 5 concrete stappen als een lijst. Begin elke stap met een werkwoord. Zeg ook wanneer iets moet gebeuren als dat in de brief staat. Wees zo concreet mogelijk: wat precies, hoe, wanneer.
+
+WAT KAN WACHTEN?
+Noem in 1 of 2 zinnen wat niet meteen hoeft. Als alles urgent is, schrijf dan: "Alles in deze brief vraagt om actie."
+
+WAT ALS JE NIETS DOET?
+Leg in maximaal 2 zinnen rustig maar eerlijk uit wat er kan gebeuren als iemand niets doet. Niet beangstigend, wel duidelijk.
+
+Sluit altijd af met één korte zin die begint met: "Bij twijfel:"
+
+EXTRA REGELS:
+- Schrijf altijd in jij-vorm
+- Maximaal 15 woorden per zin
+- Geen woorden als: derhalve, conform, inzake, betreffende, zulks, ingevolge
+- Als een datum of bedrag in de brief staat, benoem die altijd expliciet
+- Als er iets ondertekend of teruggestuurd moet worden, zeg dat altijd als eerste actiepunt`;
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 2000,
+          system: systemPrompt,
+          messages: messages
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error?.message || response.status);
+      const text = data.content?.find(b => b.type === 'text')?.text || 'Geen antwoord ontvangen';
+      lastBriefText = activeTab === 'text' ? document.getElementById('briefText').value.trim() : '[document]';
+      lastOutputText = text;
+      renderOutput(text);
+
+    } catch (err) {
+      showError('Er ging iets mis. Controleer je verbinding en probeer het opnieuw.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+      document.getElementById('submitBtn').disabled = false;
+    }
+  }
+
+  function renderOutput(text) {
+    const sections = [
+      { key: 'WAT STAAT ER?', label: 'Wat staat er?', isAction: false },
+      { key: 'WAT MOET JE DOEN?', label: 'Jouw actiepunten', isAction: true },
+      { key: 'WAT KAN WACHTEN?', label: 'Wat kan wachten?', isAction: false },
+      { key: 'WAT ALS JE NIETS DOET?', label: 'Wat als je niets doet?', isAction: false },
+    ];
+
+    let html = '';
+    let firstBlock = true;
+
+    sections.forEach((section, i) => {
+      const startIdx = text.indexOf(section.key);
+      if (startIdx === -1) return;
+
+      const contentStart = startIdx + section.key.length;
+      const nextKeys = sections.slice(i + 1)
+        .map(s => text.indexOf(s.key, contentStart))
+        .filter(x => x !== -1);
+      const endIdx = nextKeys.length ? Math.min(...nextKeys) : text.length;
+
+      let content = text.substring(contentStart, endIdx).trim();
+      const lines = content.split('\n').map(l => l.trim()).filter(Boolean);
+      const bulletLines = lines.filter(l => /^[-•*]|^\d+[.)\s]/.test(l)).map(l => l.replace(/^[-•*]\s*|^\d+[.)\s]+/, ''));
+      const textLines = lines.filter(l => !/^[-•*]|^\d+[.)\s]/.test(l));
+
+      if (!firstBlock) html += '<div class="output-divider"></div>';
+      firstBlock = false;
+
+      if (section.isAction) {
+        // Prominent action block
+        const items = bulletLines.length ? bulletLines : textLines;
+        html += `
+          <div class="action-block">
+            <div class="action-header">
+              <div class="action-icon">→</div>
+              <span class="action-title">Jouw actiepunten</span>
+            </div>
+            <ul class="action-list">
+              ${items.map(item => `<li>${item}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      } else {
+        // Regular block
+        let formatted = '';
+        if (bulletLines.length) {
+          const intro = textLines.join(' ');
+          formatted = (intro ? `<p style="margin-bottom:0.5rem">${intro}</p>` : '') +
+            '<ul style="list-style:none;padding:0">' +
+            bulletLines.map(b => `<li style="padding:0.3rem 0 0.3rem 1.2rem;position:relative"><span style="position:absolute;left:0;color:var(--accent)">→</span>${b}</li>`).join('') +
+            '</ul>';
+        } else {
+          formatted = textLines.join('<br>');
+        }
+
+        html += `
+          <div class="output-block">
+            <div class="block-label">${section.label}</div>
+            <div class="block-text">${formatted}</div>
+          </div>
+        `;
+      }
+    });
+
+    // Closing note
+    const closingMatch = text.match(/Bij twijfel[^.]+\./);
+    if (closingMatch) {
+      html += `<div class="output-divider"></div><div class="closing-note">💬 ${closingMatch[0]}</div>`;
+    }
+
+    document.getElementById('outputBody').innerHTML = html;
+    document.getElementById('outputCard').classList.add('visible');
+    document.getElementById('schrijfditTrigger').style.display = 'block';
+    document.getElementById('schrijfditCard').style.display = 'none';
+    document.getElementById('schrijfditOutput').style.display = 'none';
+    document.getElementById('schrijfditInput').value = '';
+    setTimeout(() => {
+      document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+
+  function resetTool() {
+    document.getElementById('briefText').value = '';
+    document.getElementById('outputCard').classList.remove('visible');
+    document.getElementById('schrijfditTrigger').style.display = 'none';
+    document.getElementById('schrijfditCard').style.display = 'none';
+    pdfBase64 = null; photoBase64 = null; photoMimeType = null;
+    lastBriefText = ''; lastOutputText = '';
+    document.getElementById('pdfSelected').classList.remove('visible');
+    document.getElementById('photoSelected').classList.remove('visible');
+    document.getElementById('pdfInput').value = '';
+    document.getElementById('photoInput').value = '';
+    updateCount();
+    switchTab('text');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => document.getElementById('briefText').focus(), 400);
+  }
+
+  function setLoading(show) {
+    document.getElementById('loading').classList.toggle('visible', show);
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorBox');
+    el.textContent = msg;
+    el.classList.add('visible');
+  }
+
+  function hideError() {
+    document.getElementById('errorBox').classList.remove('visible');
+  }
+
+  function openSchrijfDit() {
+    document.getElementById('schrijfditCard').style.display = 'block';
+    document.getElementById('schrijfditTrigger').style.display = 'none';
+    setTimeout(() => {
+      document.getElementById('schrijfditCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('schrijfditInput').focus();
+    }, 100);
+  }
+
+  async function genereerReactie() {
+    const intentie = document.getElementById('schrijfditInput').value.trim();
+    if (!intentie || intentie.length < 5) {
+      alert('Vertel eerst kort wat je wil zeggen of vragen.');
+      return;
+    }
+
+    document.getElementById('schrijfditBtn').disabled = true;
+    document.getElementById('schrijfditLoading').classList.add('visible');
+    document.getElementById('schrijfditOutput').style.display = 'none';
+
+    const systemPrompt = `Je bent SchrijfDit, een schrijfassistent van NoRobot. Je helpt mensen een heldere, nette reactie schrijven op een brief of besluit van een instantie.
+
+JOUW TAAK:
+Schrijf een reactiebrief in gewone, correcte taal. De brief moet:
+- Vriendelijk maar duidelijk zijn
+- In jij-vorm geschreven zijn (maar de brief zelf in ik-vorm want het is de brief van de gebruiker)
+- Kort en to the point zijn — maximaal 3 alinea's
+- Beginnen met een aanhef zoals "Geachte mevrouw/meneer,"
+- Eindigen met "Met vriendelijke groet," gevolgd door een lege regel voor de naam
+
+SCHRIJF ALLEEN DE BRIEF. Geen uitleg, geen toelichting eromheen.`;
+
+    const userMessage = `Dit was de originele brief:
+
+${lastBriefText}
+
+Dit is wat ik wil zeggen of vragen:
+${intentie}
+
+Schrijf een passende reactiebrief.`;
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userMessage }]
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error?.message || response.status);
+      const resultText = data.content?.find(b => b.type === 'text')?.text || 'Geen reactie ontvangen';
+
+      document.getElementById('schrijfditResult').textContent = resultText;
+      document.getElementById('schrijfditOutput').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('schrijfditOutput').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+
+    } catch (err) {
+      alert('Er ging iets mis. Probeer het opnieuw.');
+      console.error(err);
+    } finally {
+      document.getElementById('schrijfditBtn').disabled = false;
+      document.getElementById('schrijfditLoading').classList.remove('visible');
+    }
+  }
+
+  function kopieerReactie() {
+    const text = document.getElementById('schrijfditResult').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = '✓ Gekopieerd!';
+      setTimeout(() => { btn.textContent = '📋 Kopieer tekst'; }, 2000);
+    });
+  }
+
+  function resetSchrijfDit() {
+    document.getElementById('schrijfditInput').value = '';
+    document.getElementById('schrijfditOutput').style.display = 'none';
+    document.getElementById('schrijfditInput').focus();
+  }
+</script>
+
+</body>
+</html>
