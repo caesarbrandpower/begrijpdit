@@ -1266,14 +1266,11 @@ VERPLICHT IN DE BRIEF:
 
 SCHRIJF ALLEEN DE BRIEF. Geen uitleg, geen toelichting eromheen.`;
 
-    const userMessage = `Dit was de originele brief:
+    const briefContext = (lastBriefText && lastBriefText !== '[document]')
+      ? `Dit was de originele brief:\n\n${lastBriefText}`
+      : `Dit is de uitleg van de brief die de gebruiker heeft geüpload (gebruik dit als context voor de reactiebrief):\n\n${lastOutputText}`;
 
-${lastBriefText}
-
-Dit is wat ik wil zeggen of vragen:
-${intentie}
-
-Schrijf een passende reactiebrief.`;
+    const userMessage = `${briefContext}\n\nDit is wat de gebruiker wil zeggen of vragen:\n${intentie}\n\nSchrijf een passende reactiebrief. Gebruik alle relevante details zoals zaaknummer, adres en bedragen die je uit de context kunt halen.`;
 
     try {
       const response = await fetch('/api/chat', {
