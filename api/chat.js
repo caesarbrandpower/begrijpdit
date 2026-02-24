@@ -119,6 +119,13 @@ export default async function handler(req, res) {
     const body = req.body;
     const { processed: anonMessages, map } = processMessages(body.messages || []);
 
+    if (map.size > 0) {
+      console.log('[anonimisering] Vervangen waarden:', Object.fromEntries(map));
+      console.log('[anonimisering] Geanonimiseerde berichten:', JSON.stringify(anonMessages, null, 2));
+    } else {
+      console.log('[anonimisering] Geen persoonsgegevens gevonden.');
+    }
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
